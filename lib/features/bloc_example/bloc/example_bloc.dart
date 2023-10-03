@@ -20,7 +20,7 @@ class ExampleBloc extends Bloc<ExampleEvent, ExampleState> {
       "Henrique Augusto",
       "Manuela Ribeiro",
     ];
-
+    await Future.delayed(const Duration(seconds: 4));
     emit(ExampleStateData(names: names));
   }
 }
