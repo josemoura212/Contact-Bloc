@@ -13,6 +13,17 @@ class BlocExample extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Bloc Example'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.read<ExampleBloc>().add(
+                ExampleAddNameEvent(name: "Teste"),
+              );
+        },
+        child: Container(
+          margin: const EdgeInsets.all(10),
+          child: const Icon(Icons.add),
+        ),
+      ),
       body: Center(
         child: BlocListener<ExampleBloc, ExampleState>(
           listener: (context, state) {
@@ -65,6 +76,11 @@ class BlocExample extends StatelessWidget {
                       final name = names[index];
                       return ListTile(
                         title: Text(name),
+                        onTap: () {
+                          context.read<ExampleBloc>().add(
+                                ExampleRemoveNameEvent(name: name),
+                              );
+                        },
                       );
                     },
                   );

@@ -1,6 +1,8 @@
 import 'package:contact_bloc/features/bloc_example/bloc_example.dart';
 import 'package:flutter/material.dart';
 
+import '../features/bloc_example/bloc_freezed_example.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
   static const nameRoute = "/";
@@ -23,7 +25,7 @@ class HomePage extends StatelessWidget {
               ),
               _ButtonCard(
                 label: "Example Freezed",
-                routeName: BlocExample.nameRoute,
+                routeName: BlocFreezedExample.nameRoute,
               ),
               _ButtonCard(
                 label: "Contact",
