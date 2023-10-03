@@ -27,8 +27,9 @@ class ExampleFreezedBloc
         names: names, message: "Aguarde, Nome sendo inserido!!!!"));
     await Future.delayed(const Duration(seconds: 2));
 
-    names.add(event.name);
-    emit(ExampleFreezedState.data(names: names));
+    final newNames = [...names];
+    newNames.add(event.name);
+    emit(ExampleFreezedState.data(names: newNames));
   }
 
   FutureOr<void> _removeName(
@@ -40,8 +41,10 @@ class ExampleFreezedBloc
       orElse: () => const <String>[],
     );
 
-    names.retainWhere((element) => element != event.name);
-    emit(ExampleFreezedState.data(names: names));
+    final newNames = [...names];
+
+    newNames.retainWhere((element) => element != event.name);
+    emit(ExampleFreezedState.data(names: newNames));
   }
 
   FutureOr<void> _findNames(

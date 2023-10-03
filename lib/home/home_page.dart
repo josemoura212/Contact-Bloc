@@ -1,4 +1,5 @@
 import 'package:contact_bloc/features/bloc_example/bloc_example.dart';
+import 'package:contact_bloc/features/contacts/list/contacts_list_page.dart';
 import 'package:flutter/material.dart';
 
 import '../features/bloc_example/bloc_freezed_example.dart';
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
               ),
               _ButtonCard(
                 label: "Contact",
-                routeName: BlocExample.nameRoute,
+                routeName: ContactsListPage.nameRoute,
               ),
               _ButtonCard(
                 label: "Contact Cubit",
