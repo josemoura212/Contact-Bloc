@@ -23,6 +23,7 @@ class ContactListBloc extends Bloc<ContactListEvent, ContactListState> {
     Emitter<ContactListState> emit,
   ) async {
     try {
+      emit(const ContactListState.loading());
       final contacts = await _repository.findAll();
       emit(ContactListState.data(contacts: contacts));
     } catch (e, s) {

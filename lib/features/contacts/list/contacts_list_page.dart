@@ -1,5 +1,6 @@
 import 'package:contact_bloc/features/contacts/list/bloc/contact_list_bloc.dart';
 import 'package:contact_bloc/models/contact_model.dart';
+import 'package:contact_bloc/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,14 @@ class ContactsListPage extends StatelessWidget {
               child: Column(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Loader<ContactListBloc, ContactListState>(
+                    selector: (state) {
+                      return state.maybeWhen(
+                        loading: () => true,
+                        orElse: () => false,
+                      );
+                    },
+                  ),
                   BlocSelector<ContactListBloc, ContactListState,
                       List<ContactModel>>(
                     selector: (state) {
