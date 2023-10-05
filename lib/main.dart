@@ -2,8 +2,10 @@ import 'package:contact_bloc/features/bloc_example/bloc/example_bloc.dart';
 import 'package:contact_bloc/features/bloc_example/bloc_example.dart';
 import 'package:contact_bloc/features/bloc_example/bloc_freezed/example_freezed_bloc.dart';
 import 'package:contact_bloc/features/bloc_example/bloc_freezed_example.dart';
+import 'package:contact_bloc/features/contacts/list/bloc/contact_list_bloc.dart';
 import 'package:contact_bloc/features/contacts/list/contacts_list_page.dart';
 import 'package:contact_bloc/home/home_page.dart';
+import 'package:contact_bloc/repositories/contacts_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,25 +18,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Contact Bloc",
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+    return RepositoryProvider(
+      create: (context) => ContactsRepository(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Contact Bloc",
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        initialRoute: "/",
+        routes: {
+          HomePage.nameRoute: (_) => const HomePage(),
+          BlocExample.nameRoute: (_) => BlocProvider(
+                create: (_) => ExampleBloc()..add(ExampleFindNameEvent()),
+                child: const BlocExample(),
+              ),
+          BlocFreezedExample.nameRoute: (_) => BlocProvider(
+              create: (_) =>
+                  ExampleFreezedBloc()..add(ExampleFreezedEvent.findNames()),
+              child: const BlocFreezedExample()),
+          ContactsListPage.nameRoute: (_) => BlocProvider(
+                create: (context) => ContactListBloc(
+                    repository: context.read<ContactsRepository>())
+                  ..add(
+                    const ContactListEvent.findAll(),
+                  ),
+                child: const ContactsListPage(),
+              ),
+        },
       ),
-      initialRoute: "/",
-      routes: {
-        HomePage.nameRoute: (_) => const HomePage(),
-        BlocExample.nameRoute: (_) => BlocProvider(
-              create: (_) => ExampleBloc()..add(ExampleFindNameEvent()),
-              child: const BlocExample(),
-            ),
-        BlocFreezedExample.nameRoute: (_) => BlocProvider(
-            create: (_) =>
-                ExampleFreezedBloc()..add(ExampleFreezedEvent.findNames()),
-            child: const BlocFreezedExample()),
-        ContactsListPage.nameRoute: (_) => const ContactsListPage(),
-      },
     );
   }
 }
