@@ -4,13 +4,26 @@ import 'package:contact_bloc/features/bloc_example/bloc_freezed/example_freezed_
 import 'package:contact_bloc/features/bloc_example/bloc_freezed_example.dart';
 import 'package:contact_bloc/features/contacts/list/bloc/contact_list_bloc.dart';
 import 'package:contact_bloc/features/contacts/list/contacts_list_page.dart';
+import 'package:contact_bloc/features/contacts/register/contact_register_page.dart';
 import 'package:contact_bloc/home/home_page.dart';
 import 'package:contact_bloc/repositories/contacts_repository.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.unknown,
+      };
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +39,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
+        scrollBehavior: MyCustomScrollBehavior(),
         initialRoute: "/",
         routes: {
           HomePage.nameRoute: (_) => const HomePage(),
@@ -45,6 +59,7 @@ class MyApp extends StatelessWidget {
                   ),
                 child: const ContactsListPage(),
               ),
+          ContactRegisterPage.nameRoute: (_) => const ContactRegisterPage(),
         },
       ),
     );
