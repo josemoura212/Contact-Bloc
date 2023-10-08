@@ -1,5 +1,6 @@
 import 'package:contact_bloc/features/contacts/list/bloc/contact_list_bloc.dart';
 import 'package:contact_bloc/features/contacts/register/contact_register_page.dart';
+import 'package:contact_bloc/features/contacts/update/contact_update_page.dart';
 import 'package:contact_bloc/models/contact_model.dart';
 import 'package:contact_bloc/widgets/loader.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,16 @@ class ContactsListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, ContactRegisterPage.nameRoute);
+          // ? solution
+          Navigator.pushNamed(context, ContactRegisterPage.nameRoute).then(
+            (value) => context
+                .read<ContactListBloc>()
+                .add(const ContactListEvent.findAll()),
+          );
+          //! lint not use context funciton async
+          // BlocProvider.of<ContactListBloc>(context)
+          //     .add(const ContactListEvent.findAll());
+          // context.read<ContactListBloc>().add(const ContactListEvent.findAll());
         },
         child: const Icon(Icons.add),
       ),
@@ -73,14 +83,52 @@ class ContactsListPage extends StatelessWidget {
                         return ListView.builder(
                           shrinkWrap: true,
                           itemCount: contacts.length,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final ContactModel(:name, :email) = contacts[index];
-                            return ListTile(
-                              title: Text(
-                                name,
-                              ),
-                              subtitle: Text(
-                                email,
+                            final contact = contacts[index];
+                            return Dismissible(
+                              key: ValueKey(contact.id),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (_) {
+                                return showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text("Tem certeza?"),
+                                    content:
+                                        const Text("Quer remover o contato?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(false);
+                                        },
+                                        child: const Text("Não"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: const Text("Sim"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              onDismissed: (direction) {
+                                context.read<ContactListBloc>().add(
+                                    ContactListEvent.delete(model: contact));
+                              },
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    ContactUpdatePage.nameRoute,
+                                    arguments: contacts[index],
+                                  ).then((value) => context
+                                      .read<ContactListBloc>()
+                                      .add(const ContactListEvent.findAll()));
+                                },
+                                title: Text(contact.name),
+                                subtitle: Text(contact.email),
                               ),
                             );
                           },

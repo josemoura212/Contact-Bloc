@@ -1,22 +1,32 @@
-import 'package:contact_bloc/features/contacts/register/bloc/contact_register_bloc.dart';
+import 'package:contact_bloc/features/contacts/update/bloc/contact_update_bloc.dart';
+import 'package:contact_bloc/models/contact_model.dart';
 import 'package:contact_bloc/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ContactRegisterPage extends StatefulWidget {
-  const ContactRegisterPage({Key? key}) : super(key: key);
-
-  static const nameRoute = "/contacts/register";
+class ContactUpdatePage extends StatefulWidget {
+  final ContactModel contact;
+  const ContactUpdatePage({
+    Key? key,
+    required this.contact,
+  }) : super(key: key);
+  static const nameRoute = "/contacts/update";
 
   @override
-  State<ContactRegisterPage> createState() => _ContactRegisterPageState();
+  State<ContactUpdatePage> createState() => _ContactUpdatePageState();
 }
 
-class _ContactRegisterPageState extends State<ContactRegisterPage> {
+class _ContactUpdatePageState extends State<ContactUpdatePage> {
   final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _emailEC;
+  late final TextEditingController _nameEC;
 
-  final _nameEC = TextEditingController();
-  final _emailEC = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _nameEC = TextEditingController(text: widget.contact.name);
+    _emailEC = TextEditingController(text: widget.contact.email);
+  }
 
   @override
   void dispose() {
@@ -29,9 +39,9 @@ class _ContactRegisterPageState extends State<ContactRegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contacts Register'),
+        title: const Text('Contacts Update'),
       ),
-      body: BlocListener<ContactRegisterBloc, ContactRegisterState>(
+      body: BlocListener<ContactUpdateBloc, ContactUpdateState>(
         listenWhen: (previous, current) {
           return current.maybeWhen(
             success: () => true,
@@ -98,8 +108,9 @@ class _ContactRegisterPageState extends State<ContactRegisterPage> {
                   onPressed: () {
                     final validate = _formKey.currentState?.validate() ?? false;
                     if (validate) {
-                      context.read<ContactRegisterBloc>().add(
-                            ContactRegisterEvent.save(
+                      context.read<ContactUpdateBloc>().add(
+                            ContactUpdateEvent.save(
+                              id: widget.contact.id!,
                               name: _nameEC.text,
                               email: _emailEC.text,
                             ),
@@ -108,14 +119,14 @@ class _ContactRegisterPageState extends State<ContactRegisterPage> {
                   },
                   child: const Text("Salvar"),
                 ),
-                Loader<ContactRegisterBloc, ContactRegisterState>(
+                Loader<ContactUpdateBloc, ContactUpdateState>(
                   selector: (state) {
                     return state.maybeWhen(
                       loading: () => true,
                       orElse: () => false,
                     );
                   },
-                )
+                ),
               ],
             ),
           ),

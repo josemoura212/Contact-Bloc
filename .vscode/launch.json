@@ -10,8 +10,8 @@
       "type": "dart",
       "args": [
         "--web-renderer",
-        "html",
-        "--web-browser-flag=--disable-web-security"
+        "html"
+        // "--web-browser-flag=--disable-web-security"
       ]
     },
     {
