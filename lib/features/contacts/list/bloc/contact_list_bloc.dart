@@ -38,6 +38,7 @@ class ContactListBloc extends Bloc<ContactListEvent, ContactListState> {
     try {
       emit(const ContactListState.loading());
       await _repository.delete(event.model);
+      add(const ContactListEvent.findAll());
       final contacts = await _repository.findAll();
       emit(ContactListState.data(contacts: contacts));
     } catch (e, s) {

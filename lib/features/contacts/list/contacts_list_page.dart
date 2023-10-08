@@ -90,28 +90,7 @@ class ContactsListPage extends StatelessWidget {
                               key: ValueKey(contact.id),
                               direction: DismissDirection.endToStart,
                               confirmDismiss: (_) {
-                                return showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text("Tem certeza?"),
-                                    content:
-                                        const Text("Quer remover o contato?"),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(false);
-                                        },
-                                        child: const Text("Não"),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(true);
-                                        },
-                                        child: const Text("Sim"),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                return confirmDeleteContact(context);
                               },
                               onDismissed: (direction) {
                                 context.read<ContactListBloc>().add(
@@ -129,6 +108,21 @@ class ContactsListPage extends StatelessWidget {
                                 },
                                 title: Text(contact.name),
                                 subtitle: Text(contact.email),
+                                trailing: IconButton(
+                                  onPressed: () async {
+                                    confirmDeleteContact(context).then((value) {
+                                      if (value!) {
+                                        context.read<ContactListBloc>().add(
+                                            ContactListEvent.delete(
+                                                model: contact));
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -141,6 +135,30 @@ class ContactsListPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<bool?> confirmDeleteContact(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Tem certeza?"),
+        content: const Text("Quer remover o contato?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: const Text("Não"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: const Text("Sim"),
+          ),
+        ],
       ),
     );
   }
