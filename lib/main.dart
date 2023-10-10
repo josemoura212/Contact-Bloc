@@ -7,6 +7,12 @@ import 'package:contact_bloc/features/contacts/list/contacts_list_page.dart';
 import 'package:contact_bloc/features/contacts/register/bloc/contact_register_bloc.dart';
 import 'package:contact_bloc/features/contacts/register/contact_register_page.dart';
 import 'package:contact_bloc/features/contacts/update/bloc/contact_update_bloc.dart';
+import 'package:contact_bloc/features/contacts_cubit/list/contacts_list_cubit_page.dart';
+import 'package:contact_bloc/features/contacts_cubit/list/cubit/contact_list_cubit.dart';
+import 'package:contact_bloc/features/contacts_cubit/register/contact_register_cubit_page.dart';
+import 'package:contact_bloc/features/contacts_cubit/register/cubit/contact_register_cubit.dart';
+import 'package:contact_bloc/features/contacts_cubit/update/contact_cubit_update.dart';
+import 'package:contact_bloc/features/contacts_cubit/update/cubit/contact_update_cubit.dart';
 import 'package:contact_bloc/home/home_page.dart';
 import 'package:contact_bloc/models/contact_model.dart';
 import 'package:contact_bloc/repositories/contacts_repository.dart';
@@ -77,6 +83,28 @@ class MyApp extends StatelessWidget {
                 repository: context.read<ContactsRepository>(),
               ),
               child: ContactUpdatePage(contact: model),
+            );
+          },
+          ContactsListCubitPage.nameRoute: (context) => BlocProvider(
+              create: (context) => ContactListCubit(
+                  repository: context.read<ContactsRepository>())
+                ..findAll(),
+              child: const ContactsListCubitPage()),
+          ContactRegisterCubitPage.nameRoute: (context) => BlocProvider(
+                create: (context) => ContactRegisterCubit(
+                  repository: context.read<ContactsRepository>(),
+                ),
+                child: const ContactRegisterCubitPage(),
+              ),
+          ContactCubitUpdate.nameRoute: (context) {
+            final contact =
+                ModalRoute.of(context)!.settings.arguments as ContactModel;
+
+            return BlocProvider(
+              create: (context) => ContactUpdateCubit(
+                repository: context.read<ContactsRepository>(),
+              ),
+              child: ContactCubitUpdate(contact: contact),
             );
           }
         },

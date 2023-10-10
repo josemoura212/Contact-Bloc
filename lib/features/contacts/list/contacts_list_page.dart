@@ -18,13 +18,11 @@ class ContactsListPage extends StatelessWidget {
         title: const Text('Contacts List'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          final contactListBloc = context.read<ContactListBloc>();
           // ? solution
-          Navigator.pushNamed(context, ContactRegisterPage.nameRoute).then(
-            (value) => context
-                .read<ContactListBloc>()
-                .add(const ContactListEvent.findAll()),
-          );
+          await Navigator.pushNamed(context, ContactRegisterPage.nameRoute);
+          contactListBloc.add(const ContactListEvent.findAll());
           //! lint not use context funciton async
           // BlocProvider.of<ContactListBloc>(context)
           //     .add(const ContactListEvent.findAll());
@@ -97,14 +95,16 @@ class ContactsListPage extends StatelessWidget {
                                     ContactListEvent.delete(model: contact));
                               },
                               child: ListTile(
-                                onTap: () {
-                                  Navigator.pushNamed(
+                                onTap: () async {
+                                  final contactListBloc =
+                                      context.read<ContactListBloc>();
+                                  await Navigator.pushNamed(
                                     context,
                                     ContactUpdatePage.nameRoute,
                                     arguments: contacts[index],
-                                  ).then((value) => context
-                                      .read<ContactListBloc>()
-                                      .add(const ContactListEvent.findAll()));
+                                  );
+                                  contactListBloc
+                                      .add(const ContactListEvent.findAll());
                                 },
                                 title: Text(contact.name),
                                 subtitle: Text(contact.email),
