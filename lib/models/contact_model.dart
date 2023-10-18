@@ -32,4 +32,14 @@ class ContactModel {
 
   factory ContactModel.fromJson(String source) =>
       ContactModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ContactModel && other.name == name && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode ^ email.hashCode;
 }
